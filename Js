@@ -1,0 +1,53 @@
+function startApp() {
+    document.getElementById("welcomeScreen").classList.add("hidden");
+    document.getElementById("app").classList.remove("hidden");
+}
+
+const taskForm = document.getElementById("taskForm");
+const taskList = document.getElementById("taskList");
+const alarmSound = document.getElementById("alarmSound");
+
+let tasks = [];
+
+// Add Task
+taskForm.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const name = document.getElementById("taskName").value;
+    const start = document.getElementById("startTime").value;
+    const end = document.getElementById("endTime").value;
+
+    const task = { name, start, end };
+    tasks.push(task);
+
+    displayTasks();
+    taskForm.reset();
+});
+
+// Show tasks
+function displayTasks() {
+    taskList.innerHTML = "";
+    tasks.forEach(task => {
+        const li = document.createElement("li");
+        li.textContent = `${task.name} — ${task.start} to ${task.end}`;
+        taskList.appendChild(li);
+    });
+}
+
+// Check time every second
+setInterval(() => {
+    const now = new Date();
+    const currentTime = now.toTimeString().slice(0, 5); // HH:MM format
+
+    tasks.forEach(task => {
+        if (task.start === currentTime) {
+            playAlarm(task.name);
+        }
+    });
+}, 1000);
+
+// Play alarm
+function playAlarm(taskName) {
+    alert("⏰ Time for: " + taskName);
+    alarmSound.play();
+}
